@@ -18,7 +18,6 @@ public void StartTrial(PanController.PanMode panMode)
     NextRound();
 }
 
-
    public void NextRound()
 {
     currentRound++;
@@ -31,7 +30,6 @@ public void StartTrial(PanController.PanMode panMode)
     egg.gameObject.SetActive(true);
     pan.gameObject.SetActive(true);
 
-    // Resetear posición de la sartén al centro
     pan.transform.position = new Vector3(0f, pan.transform.position.y, pan.transform.position.z);
 
     egg.StartRound(currentRound);
