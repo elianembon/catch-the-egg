@@ -33,3 +33,6 @@ These phenomena are relevant for understanding how people interpret their action
 - [Pedro Elizalde Acevedo](https://www.github.com/PedroElizalde01)
 - [Bautista Elizalde Acevedo](https://www.linkedin.com/in/bautista-elizalde-acevedo-a44349151/)
 
+## Contributing
+
+Contributions are always welcome!
