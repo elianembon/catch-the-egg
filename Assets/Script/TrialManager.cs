@@ -31,7 +31,6 @@ public void StartTrial(PanController.PanMode panMode)
     egg.Unfreeze();
     pan.Unfreeze();
 
-    // Resetear posición de la sartén al centro
     pan.transform.position = new Vector3(0f, pan.transform.position.y, pan.transform.position.z);
 
     egg.StartRound(currentRound);
