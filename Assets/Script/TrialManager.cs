@@ -18,6 +18,7 @@ public void StartTrial(PanController.PanMode panMode)
     NextRound();
 }
 
+
    public void NextRound()
 {
     currentRound++;
@@ -27,9 +28,10 @@ public void StartTrial(PanController.PanMode panMode)
         return;
     }
 
-    egg.gameObject.SetActive(true);
-    pan.gameObject.SetActive(true);
+    egg.Unfreeze();
+    pan.Unfreeze();
 
+    // Resetear posición de la sartén al centro
     pan.transform.position = new Vector3(0f, pan.transform.position.y, pan.transform.position.z);
 
     egg.StartRound(currentRound);
@@ -41,16 +43,15 @@ public void StartTrial(PanController.PanMode panMode)
     public void RoundSuccess()
     {
         successfulCatches++;
-        egg.gameObject.SetActive(false);
-        pan.gameObject.SetActive(false);
+        egg.Freeze();
+        pan.Freeze();
         gameManager.PlayWinSound();
         Invoke(nameof(NextRound), 1f);
     }
 
     public void RoundFail()
     {
-        egg.gameObject.SetActive(false);
-        pan.gameObject.SetActive(false);
+        pan.Freeze();
         gameManager.PlayLoseSound();
         Invoke(nameof(NextRound), 1f);
     }

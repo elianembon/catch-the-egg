@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 [System.Serializable]
 public class ParticipantData
@@ -69,6 +70,16 @@ public class DataCollector : MonoBehaviour
         string sanitizedNumero = participante.numeroParticipante.Replace(" ", "_");
         string fileName = $"{sanitizedNombre}_{sanitizedNumero}";
 
+        string exeDirectory = Directory.GetParent(Application.dataPath).FullName;
+
+        string resultsFolder = Path.Combine(exeDirectory, "Resultados");
+        if (!Directory.Exists(resultsFolder))
+        {
+            Directory.CreateDirectory(resultsFolder);
+        }
+
+        string path = Path.Combine(resultsFolder, fileName + (saveFormat == SaveFormat.JSON ? ".json" : ".csv"));
+
         if (saveFormat == SaveFormat.JSON)
         {
             FullResult result = new FullResult
@@ -79,15 +90,13 @@ public class DataCollector : MonoBehaviour
                 trial3 = trials[2]
             };
 
-            string path = Application.persistentDataPath + "/" + fileName + ".json";
             string json = JsonUtility.ToJson(result, true);
-            System.IO.File.WriteAllText(path, json);
+            File.WriteAllText(path, json);
 
             Debug.Log("Datos guardados en: " + path);
         }
         else if (saveFormat == SaveFormat.CSV)
         {
-            string path = Application.persistentDataPath + "/" + fileName + ".csv";
             List<string> lines = new List<string>();
 
             lines.Add("Trial,Correct,Total,A,B,C");
@@ -95,16 +104,18 @@ public class DataCollector : MonoBehaviour
             lines.Add($"{trials[1].trial},{trials[1].correct},{trials[1].total},{trials[1].a},{trials[1].b},{trials[1].c}");
             lines.Add($"{trials[2].trial},{trials[2].correct},{trials[2].total},{trials[2].a},{trials[2].b},{trials[2].c}");
 
-            System.IO.File.WriteAllLines(path, lines);
+            File.WriteAllLines(path, lines);
 
             Debug.Log("Datos guardados en CSV en: " + path);
         }
-    }
-public void ResetData()
-{
-    participante = new ParticipantData();
-    trials.Clear();
-    saveFormat = SaveFormat.JSON;
-}
 
+        // Application.OpenURL(resultsFolder);
+    }
+
+    public void ResetData()
+    {
+        participante = new ParticipantData();
+        trials.Clear();
+        saveFormat = SaveFormat.JSON;
+    }
 }

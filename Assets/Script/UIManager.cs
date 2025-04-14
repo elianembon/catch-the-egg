@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // Agregar esto arriba para manejar Dropdown
 
 public class UIManager : MonoBehaviour
 {

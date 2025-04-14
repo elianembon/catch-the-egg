@@ -18,17 +18,45 @@ public class EggController : MonoBehaviour
     {
         currentRound = roundNumber;
         rb.gravityScale = baseGravity + gravityIncrement * (currentRound - 1);
-        transform.position = new Vector2(Random.Range(-6f, 6f), 6f); // arriba
+        transform.position = new Vector2(Random.Range(-6f, 6f), 6f); // start from top
         rb.linearVelocity = Vector2.zero;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    public void Freeze()
     {
-        if (collision.gameObject.CompareTag("Pan"))
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    public void Unfreeze()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+void OnCollisionEnter2D(Collision2D collision)
+{
+    if (collision.gameObject.CompareTag("Pan"))
+    {
+        float eggX = transform.position.x;
+        float panX = collision.transform.position.x;
+        float panWidth = collision.collider.bounds.size.x;
+
+        float validRange = panWidth * 0.9f;
+
+        if (Mathf.Abs(eggX - panX) <= validRange / 2f)
         {
             trialManager.RoundSuccess();
+            
+            Freeze();
+            collision.gameObject.GetComponent<PanController>().Freeze();
+        }    else  {
+            Vector2 pushDirection = new Vector2(Mathf.Sign(eggX - panX), 1f).normalized;
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(pushDirection * 5f, ForceMode2D.Impulse);
         }
     }
+}
+
+
 
     void OnTriggerEnter2D(Collider2D collision)
     {

@@ -8,14 +8,14 @@ public class GameManager : MonoBehaviour
     public AudioClip loseSound;
     public UIManager uiManager;
     public DataCollector dataCollector;
-public int roundsPerTrial = 20;
+public int roundsPerTrial = 20; // default
 
-public GameObject startGamePanel;
+public GameObject startGamePanel; // para mostrar "Presione Espacio"
 
 private bool waitingToStart = false;
 
     private int currentTrial = 0;
-    private int[] trialOrder = new int[] { 0, 1, 2 };
+    private int[] trialOrder = new int[] { 0, 1, 2 }; // puede cambiar a [0,2,1] para versión B
 
     void Start()
     {
