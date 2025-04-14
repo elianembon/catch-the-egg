@@ -2,7 +2,7 @@
 # Catch the Egg
 ![icon](https://raw.githubusercontent.com/PedroElizalde01/egg-pan/refs/heads/main/Assets/Sprites/pan%26egg_icon.jpg)
 
-A simple game of reflexes and control perception, where the main goal is to catch a falling egg using a frying pan controlled by the keyboard arrows.
+*Catch the Egg* is a simple game of reflexes and control perception, where the main goal is to catch a falling egg using a frying pan controlled by the keyboard arrows.
 
 The game consists of 3 trials with N attempts each. Before starting, the player must register their personal information:
 - Name
