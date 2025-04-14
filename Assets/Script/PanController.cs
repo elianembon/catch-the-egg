@@ -18,10 +18,8 @@ public class PanController : MonoBehaviour
 
     Vector3 pos = transform.position;
 
-    // Siempre leer el input normal
     float playerInput = Input.GetAxis("Horizontal");
 
-    // Movimiento automático
     float autoInput = 0f;
 
     if (mode == PanMode.HelpPlayer || mode == PanMode.HinderPlayer)
@@ -30,17 +28,15 @@ public class PanController : MonoBehaviour
         autoInput = Mathf.Clamp(distanceToEgg, -1f, 1f);
 
         if (mode == PanMode.HinderPlayer)
-            autoInput *= -1f; // Invertir para alejar
+            autoInput *= -1f; 
     }
 
-    // Solo perder control si el modo NO es Manual
     float lossOfControl = 0f;
     if (mode != PanMode.Manual)
     {
         lossOfControl = Mathf.Clamp01((float)(currentRound - 1) / (totalRounds - 1));
     }
 
-    // Mezclar input del jugador y auto-movimiento
     float finalInput = (playerInput * (1f - lossOfControl)) + (autoInput * lossOfControl);
 
     pos.x += finalInput * baseSpeed * Time.deltaTime;
