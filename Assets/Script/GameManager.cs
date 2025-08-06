@@ -48,9 +48,9 @@ public class GameManager : MonoBehaviour
 
 public void EndTrial(int successes, int total)
 {
-    uiManager.ShowSurvey((a, b, c) =>
+    uiManager.ShowSurvey((a, b, c, d) =>
     {
-        dataCollector.SaveTrial(currentTrial + 1, successes, total, a, b, c);
+        dataCollector.SaveTrial(currentTrial + 1, successes, total, a, b, c, d);
 
         currentTrial++;
         if (currentTrial >= 3)
