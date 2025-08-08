@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Net.Sockets;
 
 [System.Serializable]
 public class ParticipantData
@@ -25,6 +26,7 @@ public class TrialData
 public class FullResult
 {
     public ParticipantData participante;
+    public string selectedMode; // "ModeA" o "ModeB"
     public TrialData trial1;
     public TrialData trial2;
     public TrialData trial3;
@@ -40,12 +42,18 @@ public class DataCollector : MonoBehaviour
 {
     public ParticipantData participante = new ParticipantData();
     private List<TrialData> trials = new List<TrialData>();
+    private string selectedMode;
 
     public SaveFormat saveFormat = SaveFormat.JSON;
 
+    public void SetSelectedMode(string mode)
+    {
+        selectedMode = mode;
+    }
+
     public void SaveTrial(int trial, int correct, int total, int a, int b, int c, int d)
     {
-        Debug.Log($"Guardando Trial {trial} - Correctas: {correct}, Total: {total}, A: {a}, B: {b}, C: {c}, D: {d}");
+        //Debug.Log($"Guardando Trial {trial} - Correctas: {correct}, Total: {total}, A: {a}, B: {b}, C: {c}, D: {d}");
 
         trials.Add(new TrialData
         {
@@ -86,6 +94,7 @@ public class DataCollector : MonoBehaviour
             FullResult result = new FullResult
             {
                 participante = participante,
+                selectedMode = selectedMode,
                 trial1 = trials[0],
                 trial2 = trials[1],
                 trial3 = trials[2]

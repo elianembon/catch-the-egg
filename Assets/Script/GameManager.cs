@@ -29,6 +29,11 @@ public class GameManager : MonoBehaviour
     private float targetIntensity;
     private float intensityVelocity;
 
+    private string selectedMode;
+    private int[] modeATrialOrder = new int[] { 0, 2, 1 }; // Manual, HinderPlayer, HelpPlayer
+    private int[] modeBTrialOrder = new int[] { 0, 1, 2 }; // Manual, HelpPlayer, HinderPlayer
+
+
     void Start()
     {
         uiManager.ShowForm();
@@ -100,7 +105,17 @@ public class GameManager : MonoBehaviour
             }
         });
     }
-    
+
+    public void SetSelectedMode(string mode)
+    {
+        selectedMode = mode;
+        dataCollector.SetSelectedMode(mode); 
+
+        trialOrder = mode == "ModeA" ? new int[] { 0, 2, 1 } 
+                                     : new int[] { 0, 1, 2 };
+    }
+
+
     public void ShowEndScreen()
     {
         uiManager.ShowEndScreen();

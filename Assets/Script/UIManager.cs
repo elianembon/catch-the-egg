@@ -20,9 +20,37 @@ public class UIManager : MonoBehaviour
 
     public InputField inputRounds;
 
+    public PanController panController;
+
+    private GameManager gameManager;
+
+    public Button modeAButton;
+    public Button modeBButton;
+    private string selectedMode;
+
+    private void Start()
+    {
+        modeAButton.onClick.AddListener(() => SelectMode("ModeA"));
+        modeBButton.onClick.AddListener(() => SelectMode("ModeB"));
+        gameManager = FindAnyObjectByType<GameManager>();
+    }
+
+    private void SelectMode(string mode)
+    {
+        selectedMode = mode;
+        // Aquí puedes agregar lógica para deshabilitar los botones después de la selección
+        modeAButton.interactable = false;
+        modeBButton.interactable = false;
+
+        // Notificar al GameManager
+        gameManager.SetSelectedMode(mode);
+    }
+
     public void ShowForm()
     {
         formPanel.SetActive(true);
+
+        
     }
 
     public void SubmitForm()
@@ -38,16 +66,16 @@ public class UIManager : MonoBehaviour
         int rounds;
         if (int.TryParse(inputRounds.text, out rounds))
         {
-            FindObjectOfType<GameManager>().SetTotalRounds(rounds);
+            gameManager.SetTotalRounds(rounds);
         }
         else
         {
             Debug.LogWarning("Cantidad de rondas inválida. Usando 20 por defecto.");
-            FindObjectOfType<GameManager>().SetTotalRounds(20);
+            gameManager.SetTotalRounds(20);
         }
 
         formPanel.SetActive(false);
-        FindObjectOfType<GameManager>().ShowStartGamePanel();
+        gameManager.ShowStartGamePanel();
     }
 
 
@@ -74,6 +102,18 @@ public class UIManager : MonoBehaviour
         });
     }
 
+
+    public void PlayInAMode()
+    {
+        panController.useModeA = true;
+    }
+
+    public void PlayInBMode()
+    {
+        panController.useModeA = false;
+    }
+
+
     public void ShowEndScreen()
     {
         endPanel.SetActive(true);
@@ -83,6 +123,8 @@ public class UIManager : MonoBehaviour
         data.ResetData();
         endPanel.SetActive(false);
         formPanel.SetActive(true);
+        modeAButton.interactable = true;
+        modeBButton.interactable = true;
     }
 
 }

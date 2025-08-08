@@ -1,0 +1,37 @@
+{
+    "participante": {
+        "nombre": "wcwsd",
+        "sexo": "d",
+        "edad": 21,
+        "dni": "2",
+        "numeroParticipante": "2"
+    },
+    "selectedMode": "ModeA",
+    "trial1": {
+        "trial": 1,
+        "correct": 2,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    },
+    "trial2": {
+        "trial": 2,
+        "correct": 2,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    },
+    "trial3": {
+        "trial": 3,
+        "correct": 3,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    }
+}
