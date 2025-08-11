@@ -38,11 +38,11 @@ public class UIManager : MonoBehaviour
     private void SelectMode(string mode)
     {
         selectedMode = mode;
-        // Aquí puedes agregar lógica para deshabilitar los botones después de la selección
+        
         modeAButton.interactable = false;
         modeBButton.interactable = false;
 
-        // Notificar al GameManager
+        
         gameManager.SetSelectedMode(mode);
     }
 

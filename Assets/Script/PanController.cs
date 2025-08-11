@@ -33,6 +33,9 @@ public class PanController : MonoBehaviour
     [Tooltip("Retraso antes de que comience la asistencia (segundos)")]
     public float assistanceDelay = 0.5f;
 
+    [Range(0, 0.5f)] public float maxErrorMagnitude = 0.10f; //Margen maximo de error en HelpPlayer
+    [Range(0, 1)] public float errorProbability = 0.3f; 
+
     private float assistanceTimer = 0f;
     private bool isPlayerMoving = false;
 
@@ -81,16 +84,20 @@ public class PanController : MonoBehaviour
         float distanceToEgg = horizontalDetector.position.x - transform.position.x;
         float normalizedDistance = Mathf.Clamp(distanceToEgg / 5f, -1f, 1f);
 
+
+        if (currentPanMode == PanMode.HelpPlayer && Random.value < errorProbability)
+        {
+            float error = Random.Range(-maxErrorMagnitude, maxErrorMagnitude);
+            normalizedDistance *= (1f + error);
+        }
+
         bool shouldInvert = (currentPanMode == PanMode.HinderPlayer && useModeA) ||
-                          (currentPanMode == PanMode.HelpPlayer && !useModeA);
+                           (currentPanMode == PanMode.HelpPlayer && !useModeA);
         if (shouldInvert)
             normalizedDistance = -normalizedDistance;
-        
-      
+
         float interferenceFactor = interferenceController.GetCurrentInterference() * maxAssistanceRatio;
         return normalizedDistance * interferenceFactor;
-
-        
     }
 
     void ApplyMovementPhysics(float targetInput, float deltaTime)

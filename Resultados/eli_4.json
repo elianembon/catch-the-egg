@@ -1,0 +1,37 @@
+{
+    "participante": {
+        "nombre": "eli",
+        "sexo": "d",
+        "edad": 4,
+        "dni": "4",
+        "numeroParticipante": "4"
+    },
+    "selectedMode": "ModeB",
+    "trial1": {
+        "trial": 1,
+        "correct": 3,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    },
+    "trial2": {
+        "trial": 2,
+        "correct": 4,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    },
+    "trial3": {
+        "trial": 3,
+        "correct": 3,
+        "total": 4,
+        "a": 1,
+        "b": 1,
+        "c": 1,
+        "d": 1
+    }
+}

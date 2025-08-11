@@ -119,7 +119,7 @@ public class DataCollector : MonoBehaviour
             Debug.Log("Datos guardados en CSV en: " + path);
         }
 
-        // Application.OpenURL(resultsFolder);
+        
     }
 
     public void ResetData()

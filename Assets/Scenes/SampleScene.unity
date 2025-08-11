@@ -508,7 +508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseGravity: 0.5
-  gravityIncrement: 0.02
+  gravityIncrement: 0.2
   rb: {fileID: 132023112}
   trialManager: {fileID: 918455604}
 --- !u!58 &132023111
@@ -2847,8 +2847,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   steepness: 2.5
-  midpoint: 0.5
-  duration: 10
+  midpoint: 0.4
+  duration: 15
   maxInterference: 1.2
 --- !u!1 &619394800
 GameObject:
@@ -4837,8 +4837,10 @@ MonoBehaviour:
   turnAroundMultiplier: 2
   minX: -10
   maxX: 10
-  maxAssistanceRatio: 0.8
+  maxAssistanceRatio: 0.751
   assistanceDelay: 0.3
+  maxErrorMagnitude: 0.15
+  errorProbability: 0.3
 --- !u!61 &893985812
 BoxCollider2D:
   m_ObjectHideFlags: 0
