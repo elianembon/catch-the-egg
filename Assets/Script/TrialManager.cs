@@ -14,7 +14,7 @@ public void StartTrial(PanController.PanMode panMode)
     currentRound = 0;
     successfulCatches = 0;
     pan.SetMode(panMode);
-    totalRounds = FindObjectOfType<GameManager>().roundsPerTrial;
+    totalRounds = FindAnyObjectByType<GameManager>().roundsPerTrial;
     NextRound();
 }
 
