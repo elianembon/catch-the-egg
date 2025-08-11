@@ -1,42 +1,44 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InterferenceController : MonoBehaviour
 {
-    public InterferenceManager interferenceManager;
-    public float currentInterference = 0f;
-    public float transitionSpeed = 0.5f;
-    public int currentRound = 1;
-    public int totalRounds = 20;
+    [Header("Configuración Sigmoide")]
+    public float steepness = 2.5f; //Controla qué tan pronunciada es la curva
+    public float midpoint = 0.5f;//punto de inflexión en base al tiempo 0.5 es el medio 
+    public float duration = 10f;
+    public float maxInterference = 1f;
 
-    // Parámetros de la sigmoide
-    public float sigmoidSteepness = 0.8f;
-    public float sigmoidMidPoint = 0.6f;
+    private float timer = 0f;
+    private bool isPaused = false;
 
     void Update()
     {
-        // Obtener el valor objetivo basado en la ruleta
-        float targetInterference = interferenceManager.GetRandomWeightedInterference();
-
-        // Aplicar curva sigmoide al progreso del juego
-        float roundProgress = (float)currentRound / totalRounds;
-        float sigmoidProgress = Sigmoid(roundProgress, sigmoidSteepness, sigmoidMidPoint);
-
-        // Interpolación suave hacia el valor objetivo
-        currentInterference = Mathf.Lerp(
-            currentInterference,
-            targetInterference * sigmoidProgress,
-            Time.deltaTime * transitionSpeed
-        );
+        if (!isPaused)
+        {
+            timer += Time.deltaTime;
+            timer %= duration; 
+        }
     }
 
-    // Función sigmoide personalizable
-    private float Sigmoid(float x, float steepness, float midPoint)
+    
+    public void ResetCurve()
     {
-        return 1f / (1f + Mathf.Exp(-steepness * (x - midPoint)));
+        timer = 0f;
+        SetPause(false);
+        Debug.Log("Curva sigmoide reiniciada");
     }
 
-    public void AdvanceRound()
+    
+    public void SetPause(bool paused)
     {
-        currentRound = Mathf.Clamp(currentRound + 1, 1, totalRounds);
+        isPaused = paused;
+    }
+
+    public float GetCurrentInterference()
+    {
+        float progress = timer / duration;
+        float rawSigmoid = 1f / (1f + Mathf.Exp(-steepness * (progress - midpoint)));
+        return rawSigmoid * maxInterference;
     }
 }

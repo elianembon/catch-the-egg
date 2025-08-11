@@ -4,6 +4,11 @@ public class PanController : MonoBehaviour
 {
     public enum PanMode { Manual, HelpPlayer, HinderPlayer }
 
+    [Header("Debug")]
+    [SerializeField]
+    private float _currentInterference;
+
+
     [Header("Mode Settings")]
     public bool useModeA = true;
     private PanMode currentPanMode = PanMode.Manual;
@@ -24,7 +29,7 @@ public class PanController : MonoBehaviour
 
     [Header("Assistance Settings")]
     [Tooltip("Fuerza máxima de asistencia (como porcentaje de la aceleración normal)")]
-    [Range(0f, 1f)] public float maxAssistanceRatio = 0.3f;
+    [Range(0f, 1f)] public float maxAssistanceRatio;
     [Tooltip("Retraso antes de que comience la asistencia (segundos)")]
     public float assistanceDelay = 0.5f;
 
@@ -38,109 +43,68 @@ public class PanController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _currentInterference = interferenceController.GetCurrentInterference();
+
+        if (_currentInterference >= maxAssistanceRatio)
+        {
+            interferenceController.SetPause(true);
+        }
+
+        
         if (!canMove) return;
 
         float playerInput = Input.GetAxis("Horizontal");
-        isPlayerMoving = Mathf.Abs(playerInput) > 0.1f;
+        bool isPlayerMoving = Mathf.Abs(playerInput) > 0.1f;
 
-        // Debug útil (comenta esto en la versión final)
-        Debug.Log($"Interferencia: {interferenceController.currentInterference:F2}");
-
-        UpdateAssistanceTimer();
-        float finalInput = CalculateFinalInput(playerInput);
+        UpdateAssistanceTimer(isPlayerMoving);
+        float finalInput = playerInput + CalculateAssistance();
 
         ApplyMovementPhysics(finalInput, Time.fixedDeltaTime);
         ClampPosition();
     }
 
 
-    private void UpdateAssistanceTimer()
+    private void UpdateAssistanceTimer(bool isPlayerMoving)
     {
         assistanceTimer = isPlayerMoving ?
-                         Mathf.Min(assistanceTimer + Time.fixedDeltaTime, assistanceDelay) :
-                         0f;
-    }
-
-    private float CalculateFinalInput(float playerInput)
-    {
-        float assistance = (assistanceTimer >= assistanceDelay) ?
-                         CalculateAssistanceInput() * GetEffectiveAssistanceRatio() :
-                         0f;
-
-        return playerInput + assistance;
-    }
-
-    private float GetEffectiveAssistanceRatio()
-    {
-        return maxAssistanceRatio * interferenceController.currentInterference;
-    }
-
-    private float CalculateFinalAssistance()
-    {
-        // Obtiene la interferencia actual (0-1)
-        float interference = interferenceController.currentInterference;
-
-        // Combina con el ratio máximo
-        float effectiveRatio = maxAssistanceRatio * interference;
-
-        // Calcula la asistencia base
-        float assistance = CalculateAssistanceInput();
-
-        // Aplica el ratio efectivo
-        return assistance * effectiveRatio;
+            Mathf.Min(assistanceTimer + Time.fixedDeltaTime, assistanceDelay) :
+            0f;
     }
 
 
-    float CalculateAssistanceInput()
+
+    private float CalculateAssistance()
     {
-        if (currentPanMode == PanMode.Manual) return 0f;
+        if (currentPanMode == PanMode.Manual || assistanceTimer < assistanceDelay)
+            return 0f;
 
-        Vector3 pos = transform.position;
-        float distanceToEgg = horizontalDetector.position.x - pos.x;
-
-        // Normalizamos la distancia (valor entre -1 y 1)
+        float distanceToEgg = horizontalDetector.position.x - transform.position.x;
         float normalizedDistance = Mathf.Clamp(distanceToEgg / 5f, -1f, 1f);
 
-        // Aplicamos el modo (invertimos si es HinderPlayer)
-        if ((currentPanMode == PanMode.HinderPlayer && useModeA) ||
-            (currentPanMode == PanMode.HelpPlayer && !useModeA))
-        {
+        bool shouldInvert = (currentPanMode == PanMode.HinderPlayer && useModeA) ||
+                          (currentPanMode == PanMode.HelpPlayer && !useModeA);
+        if (shouldInvert)
             normalizedDistance = -normalizedDistance;
-        }
+        
+      
+        float interferenceFactor = interferenceController.GetCurrentInterference() * maxAssistanceRatio;
+        return normalizedDistance * interferenceFactor;
 
-        return normalizedDistance;
+        
     }
 
     void ApplyMovementPhysics(float targetInput, float deltaTime)
     {
         float targetSpeed = targetInput * maxSpeed;
+        float accelerationRate = (Mathf.Sign(targetInput) != Mathf.Sign(currentSpeed) &&
+                               Mathf.Abs(targetInput) > 0.1f ?
+            acceleration * turnAroundMultiplier :
+            Mathf.Abs(targetInput) > 0.1f ? acceleration : deceleration);
 
-        bool wantsToChangeDirection = Mathf.Sign(targetInput) != Mathf.Sign(currentSpeed) &&
-                                    Mathf.Abs(targetInput) > 0.1f;
-
-        float effectiveAcceleration;
-
-        if (wantsToChangeDirection)
-        {
-            effectiveAcceleration = acceleration * turnAroundMultiplier;
-            currentSpeed += effectiveAcceleration * Mathf.Sign(targetInput) * deltaTime;
-        }
-        else if (Mathf.Abs(targetInput) > 0.1f)
-        {
-            effectiveAcceleration = acceleration;
-            currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, effectiveAcceleration * deltaTime);
-        }
-        else
-        {
-            effectiveAcceleration = deceleration;
-            currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, effectiveAcceleration * deltaTime);
-        }
-
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * deltaTime);
         currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
 
-        Vector3 newPos = transform.position;
-        newPos.x += currentSpeed * deltaTime;
-        transform.position = newPos;
+        transform.position += Vector3.right * currentSpeed * deltaTime;
     }
 
     void ClampPosition()
@@ -149,23 +113,15 @@ public class PanController : MonoBehaviour
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
 
         if ((pos.x <= minX && currentSpeed < 0) || (pos.x >= maxX && currentSpeed > 0))
-        {
             currentSpeed = 0f;
-        }
 
         transform.position = pos;
-    }
-
-    public void SetModeSelection(bool useA)
-    {
-        useModeA = useA;
-       
     }
 
     public void SetMode(PanMode newMode)
     {
         currentPanMode = newMode;
-        
+        interferenceController.ResetCurve();
     }
 
     public void SetCurrentRound(int round, int total)
@@ -183,5 +139,6 @@ public class PanController : MonoBehaviour
     public void Unfreeze()
     {
         canMove = true;
+        
     }
 }

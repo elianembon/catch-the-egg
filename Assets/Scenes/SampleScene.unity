@@ -2808,7 +2808,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 595158269}
-  - component: {fileID: 595158271}
   - component: {fileID: 595158270}
   m_Layer: 0
   m_Name: Managers
@@ -2847,32 +2846,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcbc7f6314777dc4691dd375db1ae828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interferenceManager: {fileID: 595158271}
-  currentInterference: 0
-  transitionSpeed: 0.5
-  currentRound: 1
-  totalRounds: 20
-  sigmoidSteepness: 10
-  sigmoidMidPoint: 0.1
---- !u!114 &595158271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 595158268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a64a518d1fb52ca4f9d5c6ac696d1448, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weightedChances:
-  - weight: 1
-    interferenceValue: 2.1
-  - weight: 2
-    interferenceValue: 0.8
-  - weight: 3
-    interferenceValue: 1.5
+  steepness: 2.5
+  midpoint: 0.5
+  duration: 10
+  maxInterference: 1.2
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -4850,6 +4827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e9a9d7eda0ffd34bbc7a31f3fe05c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentInterference: 0
   useModeA: 1
   horizontalDetector: {fileID: 666648545}
   interferenceController: {fileID: 595158270}
@@ -4859,7 +4837,7 @@ MonoBehaviour:
   turnAroundMultiplier: 2
   minX: -10
   maxX: 10
-  maxAssistanceRatio: 0.9
+  maxAssistanceRatio: 0.8
   assistanceDelay: 0.3
 --- !u!61 &893985812
 BoxCollider2D:
